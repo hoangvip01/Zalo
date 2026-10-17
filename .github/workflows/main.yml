@@ -1,0 +1,23 @@
+name: Build LSPatch
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: temurin
+          cache: gradle
+      - uses: android-actions/setup-android@v3
+      - name: chmod
+        run: chmod +x ./gradlew
+      - name: Build LSPatch
+        run: ./gradlew :app:assembleDebug -Plspatch=true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zalo-patch-lspatch
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
